@@ -721,7 +721,7 @@ h1, h2, h3 { margin: 0; }
   .nav-link { padding: 10px 0; width: 100%; }
   .cart-btn, .ghost-btn { width: 100%; justify-content: center; margin-top: 8px; }
 
-  .menu-grid { grid-template-columns: 1fr; }
+  .menu-grid { grid-template-columns: minmax(0, 1fr); }
   .dish-card img { height: 190px; }
   .cart-panel { width: 100%; }
   .stat-row { grid-template-columns: repeat(2, 1fr); }
