@@ -1,49 +1,14 @@
-# Debug log
+## CC-02 — "Can't read anything in dark mode"
 
-Your notes. One entry per bug you fixed, using the template below.
+**Reproduced:** Opened localhost:3000 in an incognito window. It opened in dark mode straight away, with no toggle or saved theme involved. The dish names and prices were almost invisible, but the grey "Breakfast" line under the name was same. Then i inpected on the website and used Google DevTools and under render tab i used "Emulate CSS media feature prefers-color-scheme" and i checked it in light and dark emulation. 
 
-This file is read as carefully as your code. A correct fix you cannot
-explain counts for little; a bug you could not fix but investigated
-honestly still counts for something.
+**Cause:** In style.css, the .dish-body rule had color: #2b2118 typed in directly instead of using the --ink variable. That is the same colour as --ink in light mode, but a typed-in colour never changes when the theme switches. The dish name (color: inherit) and the price both picked it up from there, so they stayed dark brown on a dark theme. The grey line worked because it uses --muted, which the dark theme does override.
 
-Delete the example before you submit.
+**Fix:** Changed color: #2b2118 to color: var(--ink) in .dish-body (style.css, line 294). That rule is where both the name and the price get their colour, so fixing it there repaired both without adding any dark-mode-only rules.
 
+**Checked:** In dark mode the dish names and prices are readable now. In light mode they look the same as before as well.
 
-
-## Example — delete this
-
-### CC-99 — "The cart total is wrong"
-
-**Reproduced:** Added 2 dosas at Rs. 60 each. The cart showed
-Rs. 119.99999 instead of Rs. 130. Happened every time, on any dish with
-a price ending in .50.
-
-**Cause:** The total was being added up with plain floating point and
-never rounded, so 0.1 + 0.2 style errors showed up on screen. The
-rounding helper existed but this one place was not using it.
-
-**Fix:** Ran the total through the existing rounding helper instead of
-adding a new one, so every price on screen goes through the same path.
-
-**Checked:** Cart, checkout and the order screen all show Rs. 130 now.
-Prices without decimals still show without a trailing .00.
-
-**Time:** about 40 minutes, most of it working out that the cart and the
-order screen round in different places.
-
-
-
-## CC-0X — "<the complaint, in short>"
-
-**Reproduced:**
-
-**Cause:**
-
-**Fix:**
-
-**Checked:**
-
-**Time:**
+**Time:** About 2 hours 
 
 
 
@@ -53,18 +18,3 @@ For anything you investigated but did not solve. Say what you tried and
 where you got to. This is worth marks — leaving it blank when you got
 stuck is not.
 
-### CC-0X — "<the complaint>"
-
-**What I tried:**
-
-**Where I got to:**
-
-**What I would try next:**
-
-
-
-## Extra credit
-
-Anything not on the bug log: a problem you found yourself, a test you
-wrote, or a fix you are unsure about. Same format, plus one line on how
-you noticed it.
