@@ -34,6 +34,20 @@
 
 **Time:** About 1.5 hours
 
+## CC-05 — "The category bar scrolls away on my phone"
+
+**Reproduced:** I opened the site on the localhost:3000 in an incognito window. Then i opened the menu in Chrome DevTools with the iPhone SE preset (375 x 667) and scrolled down through the dishes. The category and filter bar scrolled off the top of the screen instead of staying right there. On a wide desktop window the same bar stayed pinned, so it only happened on small screens.
+
+**Cause:** The bar was already at position: sticky, so that part was fine. The problem was in the max-width: 480px block, where .view had overflow-x: hidden. Setting one overflow axis to hidden makes the other one auto, which quietly turned .view into a scroll container. Sticky sticks to the nearest scroll container, and .view never actually scrolls (the page does), so the bar had nothing to stick to. There was also top: 0 on the bar, so even once it stuck it would have slid underneath the sticky header.
+
+**Fix:** Changed overflow-x: hidden to overflow-x: clip on .view. It still cuts off sideways overflow but doesn't create a scroll container. Then changed .filters to top: 93px, so it parks just below them.
+
+**Checked:** Reloaded in the iPhone SE view and other phone models as well and scrolled the menu. The filter and category bar stays pinned under the orange slot bar, and the header and slot bar are still visible above it.
+
+**Time:** About 1 hour
+
+
+
 
 
 
