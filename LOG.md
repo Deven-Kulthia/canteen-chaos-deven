@@ -46,6 +46,20 @@
 
 **Time:** About 1 hour
 
+## CC-09 — "The menu shows more dishes than it should"
+
+**Reproduced:** I opened the site on the localhost:3000 in an incognito window. Then i opened the menu and all 37 dishes loaded straight away, even though the page asks the server for 5 at a time. Scrolling made it worse. The list grew to 74 because the same 37 dishes got added again. Happened on every load, with no filters on.
+
+**Cause:** The frontend was fine. It asked for page 1 with a limit of 5 and appended more as you scrolled. The problem was on the server. paginate() in logic/search.js cut out the right 5 dishes, but then returned the whole list instead of that slice. The totals and hasMore were worked out correctly, so the frontend kept thinking there were more pages and kept loading the full list again.
+
+**Fix:** Changed items: list to items in the return of paginate().
+
+**Checked:** First load now shows 5 dishes, the count line says total 37, and the category tabs still say All 37. Scrolling loads 5 more at a time and stops at 37 with no repeats. Filters and search start again from the first page.
+
+**Time:** About 1 hour
+
+
+
 
 
 
