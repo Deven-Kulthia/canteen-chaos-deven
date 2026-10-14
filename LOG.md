@@ -70,6 +70,18 @@
 
 **Time:** About 20 Mins
 
+## CC-08 — "An old coupon still works"
+
+**Reproduced:** I opened the site on the localhost:3000 in an incognito window. I added a dish to the cart and typed FRESHERS24 into the coupon box. Even though the offer expired last year, the code was accepted and the discount was applied.
+
+**Cause:** The expiry date was only checked when building the list of coupons shown as chips. The code that actually validates a coupon (applyCoupon in logic/pricing.js) was handed the current time but never compared it to the coupon's expiry date. So the list hid expired coupons, but anyone typing the code skipped that check, and both the cart preview and checkout went through the unchecked path.
+
+**Fix:** Added an expiry check inside applyCoupon, using the "now" value it already receives, so there is one place that decides whether a coupon is valid. A coupon with a missing or unreadable expiry date is treated as expired, so bad data can't let a coupon through by accident. The cart preview and checkout both use the same function, so one change covers both.
+
+**Checked:** Typing FRESHERS24 now shows "FRESHERS24 has expired", no discount is applied, and the total doesn't change. Lowercase and extra spaces behave the same. Placing an order with the expired code is rejected. BYTE10, FLAT50 and VEGDAY still apply normally.
+
+**Time:** About 35 Mins
+
 
 ## CC-09 — "The menu shows more dishes than it should"
 
