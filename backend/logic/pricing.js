@@ -83,12 +83,18 @@ function comboDiscount(lines) {
 function applyCoupon(code, lines, coupons, { slot = null, now = new Date() } = {}) {
   if (!code) return { valid: false, discount: 0, reason: null };
 
-  const wanted = String(code).trim().toUpperCase();
+    const wanted = String(code).trim().toUpperCase();
   const coupon = coupons.find((c) => c.code.toUpperCase() === wanted);
   if (!coupon) return { valid: false, discount: 0, reason: 'Coupon not found' };
 
   if (coupon.usesLeft <= 0) {
     return { valid: false, discount: 0, reason: 'This coupon is fully used' };
+  }
+
+  // reject expired (or missing/invalid date) coupons
+  const expiry = new Date(coupon.expiresAt);
+  if (!coupon.expiresAt || Number.isNaN(expiry.getTime()) || expiry <= now) {
+    return { valid: false, discount: 0, reason: `${coupon.code} has expired` };
   }
 
   const subtotal = sumLines(lines);
