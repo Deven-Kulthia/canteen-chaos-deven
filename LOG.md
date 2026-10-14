@@ -58,6 +58,18 @@
 
 **Time:** About 1 hour
 
+## CC-10 — "Sorting by price is backwards"
+
+**Reproduced:** I opened the site on the localhost:3000 in an incognito window. I picked “Price: low to high” on the menu and the most expensive dishes came first. Switching to “high to low” gave the cheapest ones first. Happened every time, with or without filters, and on every page of results.
+
+**Cause:** The two price comparators in SORTERS (logic/search.js) had their operands the wrong way round. price-asc was written as b.price - a.price, which sorts biggest first, and price-desc was the mirror of that. The sort worked fine, it just ran in the opposite direction to what the dropdown said.
+
+**Fix:** Swapped a and b in both comparators so price-asc is a.price - b.price and price-desc is b.price - a.price.
+
+**Checked:** Now Low to high starts from cheap and goes up and High to low starts at the most expensive and comes down. The order stays the same as more dishes load on scroll, and it still works with the Veg, Non-Veg filter as well.
+
+**Time:** About 15 min
+
 
 
 
