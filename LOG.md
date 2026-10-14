@@ -46,6 +46,18 @@
 
 **Time:** About 1 hour
 
+## CC-06 — "I ordered more than they had"
+
+**Reproduced:** I opened the site on the localhost:3000 in an incognito window. I selected a dish from the menu and saw the stock was 2 and it let me order 5 , even though the stock was 2, and the order placed without any error about stock.
+
+**Cause:** Two spots in logic/validation.js. validateLine only checked whether stock was 0 or less, so 5 against a stock of 2 looked fine to it. reserveStock then just subtracted the quantity without checking anything, even though the comment above it says it re-checks every line. So nothing ever stopped the order.
+
+**Fix:** Added a qty > stock check in validateLine so the customer gets a clear "only 2 left, you asked for 5" message. Also made reserveStock check stock before subtracting
+
+**Checked:** Now again i selected the dish with stock 2 and tried to place the order for quantity of 4, now the order didn't placed and the message shown there stock left is 2 only.
+
+**Time:** About 40 Mins
+
 ## CC-09 — "The menu shows more dishes than it should"
 
 **Reproduced:** I opened the site on the localhost:3000 in an incognito window. Then i opened the menu and all 37 dishes loaded straight away, even though the page asks the server for 5 at a time. Scrolling made it worse. The list grew to 74 because the same 37 dishes got added again. Happened on every load, with no filters on.
