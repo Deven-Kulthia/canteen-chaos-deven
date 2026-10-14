@@ -34,10 +34,14 @@ function validateLine(item, index, menu, now, seen) {
     errors.push(`${where}: you cannot order more than ${MAX_QTY_PER_DISH} of one dish`);
   }
 
-  const blocked = blockedReason(dish, now);
+    const blocked = blockedReason(dish, now);
+  const stock = Number(dish.stock);
   if (blocked && isServedNow(dish, now) === false) errors.push(`${dish.name}: ${blocked}`);
   else if (dish.disabled) errors.push(`${dish.name} is off the menu today`);
-  else if (Number(dish.stock) <= 0) errors.push(`${dish.name} is sold out`);
+  else if (stock <= 0) errors.push(`${dish.name} is sold out`);
+  else if (qty > stock) {
+    errors.push(`${dish.name}: only ${stock} left, you asked for ${qty}`);
+  }
 
   return errors;
 }
@@ -105,9 +109,16 @@ function reserveStock(items, menu) {
   const errors = [];
   const next = menu.map((d) => ({ ...d }));
 
-  items.forEach((item) => {
+    items.forEach((item) => {
     const dish = next.find((d) => d.id === Number(item.dishId));
-    if (!dish) return errors.push(`dish ${item.dishId} vanished`);
+    if (!dish) {
+      errors.push(`dish ${item.dishId} vanished`);
+      return;
+    }
+    if (dish.stock < item.qty) {
+      errors.push(`${dish.name}: only ${dish.stock} left, you asked for ${item.qty}`);
+      return;
+    }
     dish.stock -= item.qty;
   });
 
