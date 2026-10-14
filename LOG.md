@@ -58,6 +58,19 @@
 
 **Time:** About 40 Mins
 
+## CC-07 — "Cancelling makes it worse"
+
+**Reproduced:** I opened the site on the localhost:3000 in an incognito window. I placed an order for a dish, then cancelled it. The stock for that dish went down again instead of coming back. Cancel a few orders and the dish drops to 0 and shows as sold out, even though nothing is actually gone. Happens on every cancel, on any dish.
+
+**Cause:** releaseStock in logic/validation.js had the wrong sign. It did dish.stock - line.qty, so a cancel took the plates off a second time instead of putting them back. The cancel route itself was fine, it was calling releaseStock correctly.
+
+**Fix:** Changed the minus to a plus in releaseStock, so it's dish.stock + line.qty.
+
+**Checked:** Again i placed the order for the dish, then cancelled it. This time the stock went up after cancelling instead of going down.
+
+**Time:** About 20 Mins
+
+
 ## CC-09 — "The menu shows more dishes than it should"
 
 **Reproduced:** I opened the site on the localhost:3000 in an incognito window. Then i opened the menu and all 37 dishes loaded straight away, even though the page asks the server for 5 at a time. Scrolling made it worse. The list grew to 74 because the same 37 dishes got added again. Happened on every load, with no filters on.
